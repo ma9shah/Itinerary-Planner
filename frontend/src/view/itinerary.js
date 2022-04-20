@@ -57,12 +57,10 @@ export default function Itinerary(routes) {
                         >
                           <div
                             className="single-timeline-content d-flex wow fadeInLeft"
-                            // data-wow-delay="0.3s"
-                            data-wow-delay="10s"
+                            data-wow-delay="0.3s"
                             style={{
                               visibility: "visible",
-                              // animationDelay: "0.3s",
-                              animationDelay: "3s",
+                              animationDelay: "0.3s",
                               animationName: "fadeInLeft",
                             }}
                           >
