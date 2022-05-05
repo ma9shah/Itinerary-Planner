@@ -18,7 +18,7 @@ export default function Itinerary(routes) {
   }
   
   const allroutes = JSON.parse(JSON.stringify(routes));
-  console.log(allroutes)
+  // console.log(allroutes)
   return (
     <div className="bgcolor">
       <section className="timeline_area section_padding_130">
@@ -36,6 +36,7 @@ export default function Itinerary(routes) {
           <div className="row">
             <div className="col-12">
               <div className="apland-timeline-area">
+                {console.log(allroutes)}
                 {allroutes?.routes?.map((r) => (
                   <div className="single-timeline-area" key={r.date}>
                     <div
@@ -62,17 +63,23 @@ export default function Itinerary(routes) {
                               visibility: "visible",
                               animationDelay: "0.3s",
                               animationName: "fadeInLeft",
+                              minHeight: "150px"
                             }}
                           >
                             <div className="timeline-icon">
                               <i
                                 className="fa fa-address-card"
                                 aria-hidden="true"
-                              ></i>
+                                >
+                                {/* <img src="../assets/bg.jpg"></img> */}
+                                {/* <img src=""></img> */}
+                                {/* hello */}
+                              </i>
                             </div>
                             <div className="timeline-text">
                               <h6>{place.name}</h6>
                               <p>{place.formatted_address}</p>
+                              {/* <hr/> */}
                               <div className="row">
                                 <p className="col-6">
                                   {toReadableTime(place.startTime)}
