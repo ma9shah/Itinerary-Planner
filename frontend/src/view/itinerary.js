@@ -1,6 +1,29 @@
 import React from "react";
 
 export default function Itinerary(routes) {
+  console.log("From Itinerary.js", routes)
+
+  async function handleTripSave(e) {
+    console.log("HandleTripSave invoked")
+    e.preventDefault()
+    const response = await fetch('http://localhost:3001/saveTrip', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+        startDate: localStorage.getItem('startDate'),
+        endDate: localStorage.getItem('endDate'),
+        placeName: localStorage.getItem('placeName'),
+        email: localStorage.getItem('email'),
+        routes: routes
+			}),
+		})
+
+    const data = await response.json()
+    console.log(data)
+  }
+
   function toReadableTime(time) {
     var hrs = parseInt(time / 100);
     var t = hrs.toString();
@@ -16,7 +39,7 @@ export default function Itinerary(routes) {
     tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow.toDateString();
   }
-  
+
   const allroutes = JSON.parse(JSON.stringify(routes));
   // console.log(allroutes)
   return (
@@ -70,7 +93,7 @@ export default function Itinerary(routes) {
                               <i
                                 className="fa fa-address-card"
                                 aria-hidden="true"
-                                >
+                              >
                                 {/* <img src="../assets/bg.jpg"></img> */}
                                 {/* <img src=""></img> */}
                                 {/* hello */}
@@ -100,6 +123,9 @@ export default function Itinerary(routes) {
           </div>
         </div>
       </section>
+      <form onSubmit={handleTripSave}>
+        <button type="submit" className="btn btn-warning p-2">Save this trip!</button>
+      </form>
     </div>
   );
 }

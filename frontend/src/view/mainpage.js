@@ -29,7 +29,10 @@ const MainPage = () => {
     ItineraryService.getItinerary(placeName, startDate, endDate)
       .then((data) => {
         setroutes(data);
-        console.log(routes);
+        console.log("HERE!", routes);
+        localStorage.setItem('placeName', placeName)
+        localStorage.setItem('endDate', endDate)
+        localStorage.setItem('startDate', startDate)
       })
       .catch((err) => console.log(err));
   };
