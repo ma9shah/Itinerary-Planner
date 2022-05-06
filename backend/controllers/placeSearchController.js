@@ -113,6 +113,7 @@ const convertHours = (a, b) => {
   let c = parseInt(mins / 60);
   return (hrsA + hrsB + c) * 100 + (mins % 60);
 };
+
 const getTravelTime = (distances, sourceid, destinationId) => {
   const row = distances.get("place_id:" + sourceid);
   let i = 0;
@@ -124,6 +125,7 @@ const getTravelTime = (distances, sourceid, destinationId) => {
   let hours = Math.floor(minutes / 60);
   return hours * 100 + (minutes % 60);
 };
+
 const getDistance = (distances, sourceid, destinationId) => {
   const row = distances.get("place_id:" + sourceid);
   let i = 0;
