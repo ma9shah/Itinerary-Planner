@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import MainPage from "./view/mainpage";
 import LoginPage from "./view/login";
 import Register from "./view/register";
+import SavedTrips from "./view/savedTrips";
 // import Itinerary from "./view/itinerary";
 function App() {
   return (
@@ -16,6 +17,9 @@ function App() {
         </Route>
         <Route exact path="/register">
           <Register />
+        </Route>
+        <Route exact path="/mytrips">
+          <SavedTrips />
         </Route>
       </Switch>
     </Router>
