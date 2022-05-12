@@ -5,7 +5,6 @@ const DestinationField = ({ placeName, setplaceName }) => {
     return (
         <div className="form-outline mb-4">
             <Autocomplete
-                // apiKey={'AIzaSyBX6CBi-atS771zkSCImsV5DVFkZ9KkcYI'}
                 type="text"
                 id="placeName"
                 className="form-control form-control-lg"
