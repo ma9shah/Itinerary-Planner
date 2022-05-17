@@ -1,6 +1,6 @@
 import React from "react";
 // const messages = ["crunching numbers", "optimizing distances...", "loading..."]
-const messages = ["Loading...", "Optimizing distances...", "Loading..."]
+const messages = ["Loading..."]
 const Loader = () => {
   return (
     <div className="container py-5 h-100">

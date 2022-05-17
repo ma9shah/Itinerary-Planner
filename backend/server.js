@@ -45,7 +45,9 @@ dbConnection.once("open", () => console.log("Connected to DB!"));
 //Routes
 app.use("/", placesearchRoutes);
 app.post('/retrieveTrips', async (req, res)=>{
+  // const email = req.body.email
   const email = req.body.email
+  console.log(email, "successfully retrieved")
   let user_trips = await Routes.findOne({email: email})
   if(user_trips){
     res.send(user_trips)

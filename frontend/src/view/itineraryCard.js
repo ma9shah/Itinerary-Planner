@@ -20,7 +20,7 @@ function toReadableTime(time) {
   export default function ItineraryCard({allroutes}) {
     // const allroutes = JSON.parse(JSON.stringify(routes));
     
-    console.log("ALL ROUNTS", allroutes)
+    // console.log("ALL ROUTES", allroutes)
     return (
         <div className="bgcolor">
             <section className="timeline_area section_padding_130">
@@ -38,7 +38,7 @@ function toReadableTime(time) {
                     <div className="row">
                         <div className="col-12">
                             <div className="apland-timeline-area">
-                                {console.log("HERE",allroutes.routes)}
+                                {/* {console.log("HERE",allroutes.routes)} */}
                             {allroutes?.routes?.map((r) => (
                                     <div className="single-timeline-area" key={r.date}>
                                         <div
