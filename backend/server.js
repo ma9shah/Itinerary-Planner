@@ -128,6 +128,7 @@ app.post('/register', async (req, res, next) => {
 
 })
 
+// an "icsFiles" folder might be needed in the backend folder (ignored for git)
 app.post('/generateCalendar', generateCalendarController)
 
 //start express server
