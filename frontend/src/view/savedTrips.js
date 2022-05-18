@@ -31,12 +31,10 @@ export default function SavedTripsDynamic() {
             setIsLoading(0)
         }
 
-        // call the function
         fetchData()
             .then(() => {
                 console.log("All Trips", allTrips)
             })
-            // make sure to catch any error
             .catch(console.error);
     }, [])
 
@@ -53,17 +51,13 @@ export default function SavedTripsDynamic() {
                         <div className="card-header bold btn-link btn" id="headingOne">
                             <h2 className="mb-0">
                                 <button className="btn btn-white" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls={"collapse" + { index }}>
-                                    {/* <button className="h-1 btn btn-white" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"> */}
                                     <h5>    {eachTrip.placeName} from {eachTrip.startDate} to {eachTrip.endDate} </h5>
                                 </button>
                             </h2>
                         </div>
                         <div id="collapseOne" className="collapse show m-0" aria-labelledby="headingOne" data-parent="#accordionExample">
-                            {/* <div id="collapseOne" className="collapse show m-0" aria-labelledby="headingOne" data-parent="#accordionExample"> */}
                             <div className="card card-body">
                                 <br></br>
-
-                                {/* <Itinerary routes={eachTrip.routes.routes}/> */}
                                 <ItineraryCard allroutes={eachTrip.routes} />
                             </div>
                         </div>

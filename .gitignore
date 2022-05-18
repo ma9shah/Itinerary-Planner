@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 /backend/config.env
+/backend/icsFiles
 # testing
 /coverage
 

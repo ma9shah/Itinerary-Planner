@@ -8,6 +8,10 @@ const User = require('./models/user')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const Routes = require('./models/savedRoutes')
+// const ics = require('ics/dist');
+const generateCalendarController = require('./controllers/generateCalendar')
+const ics = require('ics');
+const { events } = require("./models/user");
 // express app
 const app = express();
 const port = process.env.PORT;
@@ -44,88 +48,105 @@ dbConnection.once("open", () => console.log("Connected to DB!"));
 
 //Routes
 app.use("/", placesearchRoutes);
-app.post('/retrieveTrips', async (req, res)=>{
+app.post('/retrieveTrips', async (req, res) => {
   // const email = req.body.email
   const email = req.body.email
   console.log(email, "successfully retrieved")
-  let user_trips = await Routes.findOne({email: email})
-  if(user_trips){
+  let user_trips = await Routes.findOne({ email: email })
+  if (user_trips) {
     res.send(user_trips)
   }
-  else{
-    res.send({message:"No trips", user_trips:{}})
+  else {
+    res.send({ message: "No trips", user_trips: {} })
   }
 })
-app.post('/saveTrip', async(req, res) =>{
-  try{
-    let {email, startDate, endDate, routes, placeName} = req.body
-    let user_trips = await Routes.findOne({email: email})
-    if(user_trips){
-      user_trips.trips.push({placeName, startDate, endDate, routes})
+app.post('/saveTrip', async (req, res) => {
+  try {
+    let { email, startDate, endDate, routes, placeName } = req.body
+    let user_trips = await Routes.findOne({ email: email })
+    if (user_trips) {
+      user_trips.trips.push({ placeName, startDate, endDate, routes })
       user_trips.save()
       // and send this change/update to mongo?
       res.send(user_trips)
     }
-    else{
+    else {
       user_trips = await Routes.create({
         email: email,
-        trips: [{placeName, startDate, endDate, routes}]
+        trips: [{ placeName, startDate, endDate, routes }]
       })
       res.send(user_trips)
     }
-  } catch (err){
+  } catch (err) {
     console.log("Error from /saveTrip", err)
   }
 })
 
-app.post('/login', async (req, res, next) =>{
-  try{
-      const user = await User.findOne({email:req.body.email})
-      if(user){
-          token = jwt.sign({email:user.email},'jwtsecretkeytemperory')
-          isValidUser = await bcrypt.compare(req.body.password, user.password)
-          if(isValidUser){
-              res.send({validated: true, userFound: true, token:token})    
-          }
-          else{
-              res.send({validated: false, userFound: true, token:token})
-          }
-      } else{
-          res.send({validated: false, userFound: false})
+app.post('/login', async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email })
+    if (user) {
+      token = jwt.sign({ email: user.email }, 'jwtsecretkeytemperory')
+      isValidUser = await bcrypt.compare(req.body.password, user.password)
+      if (isValidUser) {
+        res.send({ validated: true, userFound: true, token: token })
       }
-      
-      // res.json({ user, status: 'ok', existError:false })
+      else {
+        res.send({ validated: false, userFound: true, token: token })
+      }
+    } else {
+      res.send({ validated: false, userFound: false })
+    }
+
+    // res.json({ user, status: 'ok', existError:false })
   }
   catch (err) {
-      console.log("Error in logging in", err)
-      res.json({status: 'not ok'})
+    console.log("Error in logging in", err)
+    res.json({ status: 'not ok' })
   }
 })
 
-app.post('/register', async (req,res,next)=>{
-  try{
-      const userExists = await User.findOne({email:req.body.email})
-      if(userExists){
-          res.json({existError:true})
-          return
-      }
-      const user = await User.create({
-          name: req.body.name,
-          email: req.body.email,
-          password: await bcrypt.hash(req.body.password, 10)
-      })
-      token = jwt.sign({email:user.email},'jwtsecretkeytemperory')
-      res.json({ user, status: 'ok', existError:false, token:token })
+app.post('/register', async (req, res, next) => {
+  try {
+    const userExists = await User.findOne({ email: req.body.email })
+    if (userExists) {
+      res.json({ existError: true })
+      return
+    }
+    const user = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: await bcrypt.hash(req.body.password, 10)
+    })
+    token = jwt.sign({ email: user.email }, 'jwtsecretkeytemperory')
+    res.json({ user, status: 'ok', existError: false, token: token })
   }
   catch (err) {
-      console.log("Error in registeration", err)
-      res.json({status: 'not ok'})
+    console.log("Error in registeration", err)
+    res.json({ status: 'not ok' })
   }
 
 })
 
+app.post('/generateCalendar', generateCalendarController)
 
 //start express server
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+
+
+// ICS REFERENCE:
+    // const { error, value } = ics.createEvents([
+    //   {
+    //     title: 'Lunch',
+    //     start: [2018, 1, 15, 12, 15],
+    //     duration: { minutes: 45 }
+    //   },
+    //   {
+    //     title: 'Dinner',
+    //     start: [2018, 1, 15, 12, 15],
+    //     duration: { hours: 1, minutes: 30 }
+    //   }
+    // ])
