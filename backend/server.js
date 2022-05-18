@@ -10,8 +10,9 @@ const bcrypt = require('bcryptjs')
 const Routes = require('./models/savedRoutes')
 // const ics = require('ics/dist');
 const generateCalendarController = require('./controllers/generateCalendar')
-const ics = require('ics');
-const { events } = require("./models/user");
+
+// const { events } = require("./models/user");
+
 // express app
 const app = express();
 const port = process.env.PORT;
