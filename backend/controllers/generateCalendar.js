@@ -41,7 +41,10 @@ const generateCalendarController = async (req, res) => {
         let icsFileFolder = path.join(__dirname, '../icsFiles/')
         let filename_path = `${icsFileFolder}/event_${Date.now()}.ics`
         await writeFileSync(filename_path, value)
+        res.set('Content-Type', 'text/calendar')
         res.download(filename_path)
+
+        // res.attachment(filename_path)
         // res.send({ value })
 
     } catch (err) {
