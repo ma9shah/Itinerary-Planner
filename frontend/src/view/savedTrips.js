@@ -13,7 +13,7 @@ export default function SavedTripsDynamic() {
 
     useEffect(() => {
         const fetchData = async () => {
-            // I am sure there's a get request way to do this but I can't find a way to send the email address :()
+            // I'm sure there's a GET request way to do this but I can't find a way to send the email param
             const response = await fetch('http://localhost:3001/retrieveTrips/',
                 {
                     method: 'POST',
@@ -39,24 +39,24 @@ export default function SavedTripsDynamic() {
     }, [])
 
     return (
-        <div className='container'>
+        <div className='container '>
             <br />
             <br />
             <center><h2>All Your Trips!</h2></center>
             <br />
             {isLoading !== 0 && <Loader></Loader>}
-            <div className="accordion" id="accordionExample">
+            <div className="accordion border-0" id="accordionExample">
                 {allTrips.map((eachTrip, index) => (
-                    <div className="card" key={index}>
-                        <div className="card-header bold btn-link btn" id="headingOne">
+                    <div className="card" key={index} id={index}>
+                        <div className="card-header bold btn-link btn border-0" id="headingOne">
                             <h2 className="mb-0">
-                                <button className="btn btn-white" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls={"collapse" + { index }}>
+                                <button className="btn btn-white border-0" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls={"collapse" + { index }}>
                                     <h5>    {eachTrip.placeName} from {eachTrip.startDate} to {eachTrip.endDate} </h5>
                                 </button>
                             </h2>
                         </div>
-                        <div id="collapseOne" className="collapse show m-0" aria-labelledby="headingOne" data-parent="#accordionExample">
-                            <div className="card card-body">
+                        <div id="collapseOne" className="collapse show m-0 border-0" aria-labelledby="headingOne" data-parent="#accordionExample">
+                            <div className="card card-body border-0">
                                 <br></br>
                                 <ItineraryCard allroutes={eachTrip.routes} />
                             </div>

@@ -4,7 +4,7 @@ import Autocomplete from "react-google-autocomplete";
 const DestinationField = ({ placeName, setplaceName }) => {
     return (
         <div className="form-outline mb-4">
-            <Autocomplete
+            {/* <Autocomplete
                 type="text"
                 id="placeName"
                 className="form-control form-control-lg"
@@ -16,15 +16,15 @@ const DestinationField = ({ placeName, setplaceName }) => {
                 }}
             // value={placeName}
             // onChange={(e) => setplaceName(e.target.value)}
-            />
-            {/* <input
+            /> */}
+            <input
                 type="text"
                 id="placeName"
                 className="form-control form-control-lg"
                 placeholder="Please enter the destination name"
                 value={placeName}
                 onChange={(e) => setplaceName(e.target.value)}
-            /> */}
+            />
         </div>
     )
 }
