@@ -26,7 +26,7 @@ export default function SavedTripsDynamic() {
                 });
 
             const data = await response.json()
-            await delay(2000)
+            // await delay(2000)
             setAllTrips(data.trips)
             setIsLoading(0)
         }
