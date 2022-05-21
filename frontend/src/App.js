@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import MainPage from "./view/mainpage";
 import LoginPage from "./view/login";
 import Register from "./view/register";
-import savedTrips_Redundant from "./view/savedTrips_Redundant";
+import SavedTrips_Redundant from "./view/savedTrips_Redundant";
 import SavedTrips from "./view/savedTrips";
 // import Itinerary from "./view/itinerary";
 function App() {
@@ -20,7 +20,7 @@ function App() {
           <Register />
         </Route>
         <Route exact path="/mytripsold">
-          <savedTrips_Redundant />
+          <SavedTrips_Redundant />
         </Route>
         <Route exact path="/mytrips">
           <SavedTrips />
