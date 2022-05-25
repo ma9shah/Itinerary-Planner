@@ -132,7 +132,46 @@ app.post('/register', async (req, res, next) => {
 // an "icsFiles" folder might be needed in the backend folder (ignored for git)
 app.post('/generateCalendar', generateCalendarController)
 
+
+// Preferences!
+app.get('/retrievePrefs/:emailid', async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.params.emailid })
+    if (user) {
+      if (user.prev!==false){
+        res.send({prev: user.prev})
+      }
+      else{
+        res.send({prev: false})
+      }
+    }
+    else{
+      res.send({user:0})
+    }
+}
+catch (err){
+  console.log(err)
+}
+})
+
+app.post('/updatePrefs', async (req, res) => {
+  let { email, newPrefs } = req.body
+  console.log(newPrefs, email)
+  let user = await User.findOne({ email: email })
+  if (user) {
+    user.prev = newPrefs
+    user.save()
+    // and send this change/update to mongo?
+    let just_to_check_user = await User.findOne({ email: email })
+    console.log(just_to_check_user)
+    res.send({prev: just_to_check_user.prev})
+  }
+  else{
+    console.log("USER NOT FOUND!")
+  }
+})
+
 //start express server
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
-});
+}); 

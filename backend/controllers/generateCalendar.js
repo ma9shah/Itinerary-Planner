@@ -56,9 +56,6 @@ const generateCalendarController = async (req, res) => {
 
 module.exports = generateCalendarController
 
-
-
-
 // ICS REFERENCE:
     // const { error, value } = ics.createEvents([
     //   {

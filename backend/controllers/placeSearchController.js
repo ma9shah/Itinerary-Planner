@@ -181,6 +181,10 @@ const prepareItinerary = (routePermutations, distances, d) => {
 
         place.endTime = convertHours(place.startTime, 200);
         ratingScore += place.rating * place.user_ratings_total;
+        if(place.type.includes("museum")){
+            ratingScore += (place.rating * place.user_ratings_total);
+        }
+
         distanceScore += Math.ceil(
           getDistance(distances, prevPlace.place_id, place.place_id)
         );
@@ -203,7 +207,7 @@ const prepareItinerary = (routePermutations, distances, d) => {
     console.log(minRatingScore + " " + maxRatingScore);
     for (let i = 0; i < Itinerary.length; ++i) {
       Itinerary[i].profitScore = Math.abs(
-        3 *
+        4 *
           ((Itinerary[i].ratingScore - minRatingScore) /
             (maxRatingScore - minRatingScore)) -
           (2 * (Itinerary[i].distanceScore - minDistanceScore)) /

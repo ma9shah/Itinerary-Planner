@@ -5,6 +5,7 @@ import LoginPage from "./view/login";
 import Register from "./view/register";
 import SavedTrips_Redundant from "./view/savedTrips_Redundant";
 import SavedTrips from "./view/savedTrips";
+import UserPrefs from "./view/userPrefs";
 // import Itinerary from "./view/itinerary";
 function App() {
   return (
@@ -24,6 +25,9 @@ function App() {
         </Route>
         <Route exact path="/mytrips">
           <SavedTrips />
+        </Route>
+        <Route exact path="/preferences">
+          <UserPrefs />
         </Route>
       </Switch>
     </Router>
