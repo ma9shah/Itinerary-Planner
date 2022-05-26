@@ -12,7 +12,7 @@ const FinalRoutes = []; // Final route for each day
 const FinalPlaces = new Map(); // Final places for the entire
 
 const User = require('../models/user')
-
+const PlacesChached = require('../models/placesChached')
 
 async function filterPlaces(places = []) {
   // console.log(places)
@@ -228,34 +228,35 @@ const prepareItinerary = async (routePermutations, distances, d, user_email) => 
     });
     console.log(minRatingScore + " " + maxRatingScore);
 
-    if(preferences.includes("walkable")){
+    if (preferences.includes("walkable")) {
       for (let i = 0; i < Itinerary.length; ++i) {
-  
+
         Itinerary[i].profitScore =
           (2 * (Itinerary[i].ratingScore - minRatingScore) /
             (maxRatingScore - minRatingScore)) /
-          ((10*(Itinerary[i].distanceScore - minDistanceScore))**2 /
+          ((10 * (Itinerary[i].distanceScore - minDistanceScore)) ** 2 /
             (maxDistanceScore - minDistanceScore))
-    }}
-    else{
+      }
+    }
+    else {
       for (let i = 0; i < Itinerary.length; ++i) {
         Itinerary[i].profitScore = Math.abs(
           4 *
-            ((Itinerary[i].ratingScore - minRatingScore) /
-              (maxRatingScore - minRatingScore)) -
-            (2 * (Itinerary[i].distanceScore - minDistanceScore)) /
-              (maxDistanceScore - minDistanceScore)
+          ((Itinerary[i].ratingScore - minRatingScore) /
+            (maxRatingScore - minRatingScore)) -
+          (2 * (Itinerary[i].distanceScore - minDistanceScore)) /
+          (maxDistanceScore - minDistanceScore)
         );
       }
     }
 
-      // Itinerary[i].profitScore = Math.abs(
-      //     (alpha * (Itinerary[i].ratingScore - minRatingScore) /
-      //       (maxRatingScore - minRatingScore)) -
-      //       beta * ( (Itinerary[i].distanceScore - minDistanceScore)) /
-      //       (maxDistanceScore - minDistanceScore)
-      // );
-    
+    // Itinerary[i].profitScore = Math.abs(
+    //     (alpha * (Itinerary[i].ratingScore - minRatingScore) /
+    //       (maxRatingScore - minRatingScore)) -
+    //       beta * ( (Itinerary[i].distanceScore - minDistanceScore)) /
+    //       (maxDistanceScore - minDistanceScore)
+    // );
+
     Itinerary.sort((x, y) => {
       if (x.profitScore < y.profitScore) return 1;
       if (x.profitScore > y.profitScore) return -1;
@@ -324,52 +325,70 @@ async function getTouristPlaces(req, res) {
   FinalPlaces.clear();
   const set = new Set();
   const textsearch = "tourist places in " + req.query.placeName;
+  const placeName = req.query.placeName
   startDate = new Date(req.query.startDate);
   endDate = new Date(req.query.endDate);
   email = req.query.email;
+  let places = []
+  let cachedPlace = await PlacesChached.findOne({ name: placeName.toLowerCase() })
+  if (cachedPlace) {
+    console.log("Cached Places Response!")
+    places = cachedPlace.response
+  }
+  else {
+    var nextPageToken = "";
+    // let places = [];
+    var i = 0;
+    do {
+      try {
+        const response = await client.textSearch({
+          params: {
+            query: textsearch,
+            key: process.env.API_KEY,
+            pagetoken: nextPageToken,
+          },
+        });
+
+        response.data.results.forEach((r) => {
+          if (r.business_status === "OPERATIONAL" && !set.has(r.place_id)) {
+            const obj = {
+              place_id: r.place_id,
+              business_status: r.business_status,
+              formatted_address: r.formatted_address,
+              name: r.name,
+              type: r.types,
+              rating: r.rating,
+              user_ratings_total: r.user_ratings_total,
+            };
+            places.push(obj);
+            set.add(r.place_id);
+            // fs.appendFileSync("test.txt", obj.place_id + " " + obj.name + "\n");
+          }
+        });
+
+        nextPageToken = response.data.next_page_token;
+
+        i++;
+      } catch (error) {
+        //   console.log("error" + error);
+      }
+    } while (nextPageToken !== "" && i < 4);
+
+    // save places to PlacesCached with placeName as name
+    // try without await later because the code that follows doesn't depend on it's completion
+      SavedPlaces = await PlacesChached.create({
+      name: placeName.toLowerCase(),
+      response: places
+    })
+
+  }
+
   // console.log("Email from placeSearchController->getTouristPlaces", email)
-  var nextPageToken = "";
-  const places = [];
-  var i = 0;
-  do {
-    try {
-      const response = await client.textSearch({
-        params: {
-          query: textsearch,
-          key: process.env.API_KEY,
-          pagetoken: nextPageToken,
-        },
-      });
-
-      response.data.results.forEach((r) => {
-        if (r.business_status === "OPERATIONAL" && !set.has(r.place_id)) {
-          const obj = {
-            place_id: r.place_id,
-            business_status: r.business_status,
-            formatted_address: r.formatted_address,
-            name: r.name,
-            type: r.types,
-            rating: r.rating,
-            user_ratings_total: r.user_ratings_total,
-          };
-          places.push(obj);
-          set.add(r.place_id);
-          // fs.appendFileSync("test.txt", obj.place_id + " " + obj.name + "\n");
-        }
-      });
-
-      nextPageToken = response.data.next_page_token;
-
-      i++;
-    } catch (error) {
-      //   console.log("error" + error);
-    }
-  } while (nextPageToken !== "" && i < 4);
 
   // const routes = await planRoutes(place, startDate, endDate);
   // const r = [];
   // routes.forEach((route) => r.push(route));
-  console.log(places)
+  // console.log(places)
   await planRoutes(places, startDate, endDate, email);
   res.status(200).send(FinalRoutes);
 }
