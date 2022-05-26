@@ -26,7 +26,7 @@ const MainPage = () => {
     }
 
     setisLoading(true);
-    ItineraryService.getItinerary(placeName, startDate, endDate)
+    ItineraryService.getItinerary(placeName, startDate, endDate, localStorage.getItem('email'))
       .then((data) => {
         setroutes(data);
         console.log("HERE!", routes);

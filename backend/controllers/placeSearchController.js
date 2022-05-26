@@ -2,13 +2,17 @@ const { Client } = require("@googlemaps/google-maps-services-js");
 const client = new Client({});
 const fs = require("fs");
 
+
 const destinations = [];
-const AllPlaces = new Map(); //Top 20 places sorted on ratings* user_rating_count
+const AllPlaces = new Map(); //Top 20 places sorted on ratings * user_rating_count
 let startDate = new Date();
 let endDate = new Date();
 const dayItinerary = new Map();
 const FinalRoutes = []; // Final route for each day
 const FinalPlaces = new Map(); // Final places for the entire
+
+const User = require('../models/user')
+
 
 async function filterPlaces(places = []) {
   // console.log(places)
@@ -89,7 +93,7 @@ async function findDistanceMatrix() {
     }
     return distances;
   } catch (error) {
-    console.log("error" + error);
+    console.log("error", error);
   }
 }
 
@@ -134,7 +138,12 @@ const getDistance = (distances, sourceid, destinationId) => {
   }
   return row.elements[i].distance.value;
 };
-const prepareItinerary = (routePermutations, distances, d) => {
+
+const prepareItinerary = async (routePermutations, distances, d, user_email) => {
+  console.log("prepareItineraryInvoked", user_email)
+  curr_user = await User.findOne({ email: user_email })
+  preferences = curr_user.prev
+  console.log("preferences - prev", preferences)
   try {
     let day = d.getDay();
     let ratingScore = 0.0,
@@ -175,15 +184,28 @@ const prepareItinerary = (routePermutations, distances, d) => {
         if (
           place.opening_hours.get(day)[0].length > 1 &&
           place.opening_hours.get(day)[0][1] <
-            convertHours(place.startTime, 200)
+          convertHours(place.startTime, 200)
         )
           return;
 
         place.endTime = convertHours(place.startTime, 200);
         ratingScore += place.rating * place.user_ratings_total;
-        if(place.type.includes("museum")){
-            ratingScore += (place.rating * place.user_ratings_total);
+        // if(place.type.includes("museum")){
+        //     ratingScore += (place.rating * place.user_ratings_total);
+        // }
+
+        let intersection = place.type.filter(value => preferences.includes(value));
+        if (intersection.length >= 1) {
+          // console.log(intersection)
+          ratingScore += (place.rating * place.user_ratings_total);
         }
+
+        // Avoid tourist_place
+        // if (preferences.includes("tourist_place")){
+        //   console.log("Avoiding TouristPlaces")
+        //   ratingScore -= 1.5 * (place.rating * place.user_ratings_total);
+        // }
+
 
         distanceScore += Math.ceil(
           getDistance(distances, prevPlace.place_id, place.place_id)
@@ -205,15 +227,35 @@ const prepareItinerary = (routePermutations, distances, d) => {
       Itinerary.push(it);
     });
     console.log(minRatingScore + " " + maxRatingScore);
-    for (let i = 0; i < Itinerary.length; ++i) {
-      Itinerary[i].profitScore = Math.abs(
-        4 *
-          ((Itinerary[i].ratingScore - minRatingScore) /
-            (maxRatingScore - minRatingScore)) -
-          (2 * (Itinerary[i].distanceScore - minDistanceScore)) /
-            (maxDistanceScore - minDistanceScore)
-      );
+
+    if(preferences.includes("walkable")){
+      for (let i = 0; i < Itinerary.length; ++i) {
+  
+        Itinerary[i].profitScore =
+          (2 * (Itinerary[i].ratingScore - minRatingScore) /
+            (maxRatingScore - minRatingScore)) /
+          ((10*(Itinerary[i].distanceScore - minDistanceScore))**2 /
+            (maxDistanceScore - minDistanceScore))
+    }}
+    else{
+      for (let i = 0; i < Itinerary.length; ++i) {
+        Itinerary[i].profitScore = Math.abs(
+          4 *
+            ((Itinerary[i].ratingScore - minRatingScore) /
+              (maxRatingScore - minRatingScore)) -
+            (2 * (Itinerary[i].distanceScore - minDistanceScore)) /
+              (maxDistanceScore - minDistanceScore)
+        );
+      }
     }
+
+      // Itinerary[i].profitScore = Math.abs(
+      //     (alpha * (Itinerary[i].ratingScore - minRatingScore) /
+      //       (maxRatingScore - minRatingScore)) -
+      //       beta * ( (Itinerary[i].distanceScore - minDistanceScore)) /
+      //       (maxDistanceScore - minDistanceScore)
+      // );
+    
     Itinerary.sort((x, y) => {
       if (x.profitScore < y.profitScore) return 1;
       if (x.profitScore > y.profitScore) return -1;
@@ -224,8 +266,10 @@ const prepareItinerary = (routePermutations, distances, d) => {
     console.log(error);
   }
 };
-async function planRoutes(places = [], startDate, endDate) {
+async function planRoutes(places = [], startDate, endDate, email) {
   // const placesList = await filterPlaces(places);
+  // console.log("Email from placeSearchController->planRoutes", email)
+
   await filterPlaces(places);
   const distances = await findDistanceMatrix();
   const tempPlaces = destinations;
@@ -233,17 +277,23 @@ async function planRoutes(places = [], startDate, endDate) {
   findPermutations(routePermutations, tempPlaces, [], 4);
   var d = startDate;
   let it;
+  let temp;
   for (d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
     if (!dayItinerary.has(d.getDay)) {
+      temp = await prepareItinerary(routePermutations, distances, d, email)
       dayItinerary.set(
         d.getDay(),
-        prepareItinerary(routePermutations, distances, d)
+        temp
+        // temp = await prepareItinerary(routePermutations, distances, d, email)
       );
     }
     it = dayItinerary.get(d.getDay());
+    // console.log("it", it)
+    // console.log("dayItinerary", dayItinerary)
     do {
       var count = 0;
       const route = it[Math.floor(Math.random() * ((d.getDay() + 1) * 10 + 1))];
+      // console.log("route from planRoutes ", route)
       const temp = new Map();
       for (let j = 0; j < route.route.length; ++j) {
         if (temp.has(route.route[j].place_id)) break;
@@ -276,6 +326,8 @@ async function getTouristPlaces(req, res) {
   const textsearch = "tourist places in " + req.query.placeName;
   startDate = new Date(req.query.startDate);
   endDate = new Date(req.query.endDate);
+  email = req.query.email;
+  // console.log("Email from placeSearchController->getTouristPlaces", email)
   var nextPageToken = "";
   const places = [];
   var i = 0;
@@ -317,7 +369,8 @@ async function getTouristPlaces(req, res) {
   // const routes = await planRoutes(place, startDate, endDate);
   // const r = [];
   // routes.forEach((route) => r.push(route));
-  await planRoutes(places, startDate, endDate);
+  console.log(places)
+  await planRoutes(places, startDate, endDate, email);
   res.status(200).send(FinalRoutes);
 }
 

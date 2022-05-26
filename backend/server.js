@@ -161,10 +161,7 @@ app.post('/updatePrefs', async (req, res) => {
   if (user) {
     user.prev = newPrefs
     user.save()
-    // and send this change/update to mongo?
-    let just_to_check_user = await User.findOne({ email: email })
-    console.log(just_to_check_user)
-    res.send({prev: just_to_check_user.prev})
+    res.send({prev: newPrefs})
   }
   else{
     console.log("USER NOT FOUND!")
