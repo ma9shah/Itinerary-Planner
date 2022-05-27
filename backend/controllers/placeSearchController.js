@@ -140,10 +140,8 @@ const getDistance = (distances, sourceid, destinationId) => {
 };
 
 const prepareItinerary = async (routePermutations, distances, d, user_email) => {
-  console.log("prepareItineraryInvoked", user_email)
   curr_user = await User.findOne({ email: user_email })
   preferences = curr_user.prev
-  console.log("preferences - prev", preferences)
   try {
     let day = d.getDay();
     let ratingScore = 0.0,
@@ -201,10 +199,10 @@ const prepareItinerary = async (routePermutations, distances, d, user_email) => 
         }
 
         // Avoid tourist_place
-        // if (preferences.includes("tourist_place")){
-        //   console.log("Avoiding TouristPlaces")
-        //   ratingScore -= 1.5 * (place.rating * place.user_ratings_total);
-        // }
+        if (preferences.includes("tourist_place")){
+          console.log("Avoiding TouristPlaces")
+          ratingScore -= 1.5 * (place.rating * place.user_ratings_total);
+        }
 
 
         distanceScore += Math.ceil(
@@ -374,21 +372,14 @@ async function getTouristPlaces(req, res) {
       }
     } while (nextPageToken !== "" && i < 4);
 
-    // save places to PlacesCached with placeName as name
-    // try without await later because the code that follows doesn't depend on it's completion
-      SavedPlaces = await PlacesChached.create({
+      // SavedPlaces = await PlacesChached.create({
+      PlacesChached.create({
       name: placeName.toLowerCase(),
       response: places
     })
 
   }
 
-  // console.log("Email from placeSearchController->getTouristPlaces", email)
-
-  // const routes = await planRoutes(place, startDate, endDate);
-  // const r = [];
-  // routes.forEach((route) => r.push(route));
-  // console.log(places)
   await planRoutes(places, startDate, endDate, email);
   res.status(200).send(FinalRoutes);
 }
