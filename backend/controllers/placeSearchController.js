@@ -188,6 +188,7 @@ const prepareItinerary = async (routePermutations, distances, d, user_email) => 
 
         place.endTime = convertHours(place.startTime, 200);
         ratingScore += place.rating * place.user_ratings_total;
+        
         // if(place.type.includes("museum")){
         //     ratingScore += (place.rating * place.user_ratings_total);
         // }
