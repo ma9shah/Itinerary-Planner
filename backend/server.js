@@ -154,19 +154,19 @@ catch (err){
 }
 })
 
-app.post('/updatePrefs', async (req, res) => {
-  let { email, newPrefs } = req.body
-  console.log(newPrefs, email)
-  let user = await User.findOne({ email: email })
-  if (user) {
-    user.prev = newPrefs
-    user.save()
-    res.send({prev: newPrefs})
-  }
-  else{
-    console.log("USER NOT FOUND!")
-  }
-})
+  app.post('/updatePrefs', async (req, res) => {
+    let { email, newPrefs } = req.body
+    console.log(newPrefs, email)
+    let user = await User.findOne({ email: email })
+    if (user) {
+      user.prev = newPrefs
+      user.save()
+      res.send({prev: newPrefs})
+    }
+    else{
+      console.log("USER NOT FOUND!")
+    }
+  })
 
 //start express server
 app.listen(port, () => {
