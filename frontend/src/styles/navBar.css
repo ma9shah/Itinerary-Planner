@@ -1,6 +1,8 @@
 Nav{
   margin-top: 15px;
 }
+
+
 .nav-list {
     background: transparent;
     display: flex;    
@@ -37,11 +39,15 @@ Nav{
     border-bottom: rgb(42, 41, 41) 1px solid;
   }
   
+ 
   /* .nav-item:first-child {
     margin-right: auto;
     margin-left: 2prem;
   } */
-
+#brandlogo:hover{
+  color: black;
+  border: 0px;
+}
   .nav-btn {
     margin-right: 20px;
     /* justify-content: flex-end; */
@@ -82,3 +88,4 @@ Nav{
     font-size: 1.25rem;
 
   }
+

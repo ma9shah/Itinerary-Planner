@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import UserPrefCheckbox from './userPrefCheckbox';
+import NavBar from './NavBar'
+
 // label: [actual]
 const categories = {
     // historical: ["museum", "city_hall"],
@@ -109,6 +111,7 @@ export default function UserPrefs() {
 
     return (
         <>  
+            <NavBar></NavBar>
             <UserPrefCheckbox label={"Museum"} state={museum} setState={setMuseum}></UserPrefCheckbox>
             <UserPrefCheckbox label={"Cultural"} state={cultural} setState={setCultural}></UserPrefCheckbox>
             <UserPrefCheckbox label={"Religious"} state={religious} setState={setReligious}></UserPrefCheckbox>

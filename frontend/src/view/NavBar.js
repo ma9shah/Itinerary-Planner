@@ -15,8 +15,11 @@ export default function NavBar() {
             <nav>
                 <ul className="nav-list">
                     <li className="nav-item navbrand">
+                        <a href="/" id="brandlogo">
+
                         <img className='navlogo' src={require("../assets/logoicon.png")} alt="LOGO NOT WORKING" srcset="" /> 
                         TRAVELER
+                        </a>
                     </li>
                     <li className="nav-item">
                         <a className='nav-sub-item-1' href="/preferences">Preferences</a>
