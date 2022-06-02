@@ -4,9 +4,7 @@ Nav{
 .nav-list {
     background: transparent;
     display: flex;    
-    /* justify-content: space-around; */
     justify-content: space-between;
-    /* justify-content: flex-start; */
     align-items: center;
   }
   
