@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Itinerary from './itinerary'
 import ItineraryCard from './itineraryCard'
 import Loader from './loader'
-
+import NavBar from './NavBar'
 // for testing the loader
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -10,6 +10,7 @@ export default function SavedTripsDynamic() {
 
     const [isLoading, setIsLoading] = useState(1)
     const [allTrips, setAllTrips] = useState([])
+    const [noTrips, setNoTrips] = useState('Still loading!')
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,7 +28,12 @@ export default function SavedTripsDynamic() {
 
             const data = await response.json()
             // await delay(2000)
-            setAllTrips(data.trips)
+            if (data.trips) {
+                setAllTrips(data.trips)
+                setNoTrips(false)
+            } else {
+                setNoTrips(true)
+            }
             setIsLoading(0)
         }
 
@@ -39,32 +45,44 @@ export default function SavedTripsDynamic() {
     }, [])
 
     return (
-        <div className='container '>
-            <br />
-            <br />
-            <center><h2>All Your Trips!</h2></center>
-            <br />
-            {isLoading !== 0 && <Loader></Loader>}
-            <div className="accordion border-0" id="accordionExample">
-                {allTrips.map((eachTrip, index) => (
-                    <div className="card" key={index} id={index}>
-                        <div className="card-header bold btn-link btn border-0" id="headingOne">
-                            <h2 className="mb-0">
-                                <button className="btn btn-white border-0" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls={"collapse" + { index }}>
-                                    <h5>    {eachTrip.placeName} from {eachTrip.startDate} to {eachTrip.endDate} </h5>
-                                </button>
-                            </h2>
-                        </div>
-                        <div id="collapseOne" className="collapse show m-0 border-0" aria-labelledby="headingOne" data-parent="#accordionExample">
-                            <div className="card card-body border-0">
-                                <br></br>
-                                <ItineraryCard allroutes={eachTrip.routes} />
+        <>
+
+            <NavBar></NavBar>
+            {noTrips && (
+                //TODO: Center message on the page
+                <h3>
+                    You don't have any trips saved!
+                </h3>
+
+            )}
+
+            {!noTrips && (<div className='container '>
+                <br />
+                <br />
+                <center><h2>All Your Trips!</h2></center>
+                <br />
+                {isLoading !== 0 && <Loader></Loader>}
+                <div className="accordion border-0" id="accordionExample">
+                    {allTrips.map((eachTrip, index) => (
+                        <div className="card" key={index} id={index}>
+                            <div className="card-header bold btn-link btn border-0" id="headingOne">
+                                <h2 className="mb-0">
+                                    <button className="btn btn-white border-0" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls={"collapse" + { index }}>
+                                        <h5>    {eachTrip.placeName} from {eachTrip.startDate} to {eachTrip.endDate} </h5>
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapseOne" className="collapse show m-0 border-0" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <div className="card card-body border-0">
+                                    <br></br>
+                                    <ItineraryCard allroutes={eachTrip.routes} />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
-            </div>
-        </div>
+                    ))}
+                </div>
+            </div>)}
+        </>
 
     )
 }
