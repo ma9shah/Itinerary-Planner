@@ -53,12 +53,15 @@
     padding: 0.5rem 0.75rem;
     cursor: pointer;
     transition: all 200ms ease-in;
-    color: white;
+    text-decoration: none;
+    color: white !important;
+
     /* align-self: flex-end; */
     /* min-width: 100px; */
   }
   
   .nav-btn:hover {
+    color: white;
     box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
   }
   

@@ -23,7 +23,7 @@ export default function NavBar() {
                         <a href="/myTrips" className='nav-sub-item'>Trips</a>
                     </li>
                     <li className="nav-item">
-                        <button className="nav-btn">Sign In</button>
+                        <a href='/login' className="nav-btn">Sign In</a>
                     </li>
                 </ul>
             </nav>
