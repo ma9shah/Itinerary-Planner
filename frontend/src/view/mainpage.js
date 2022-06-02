@@ -56,7 +56,8 @@ const MainPage = () => {
 
       {!isLoaded && !isLoading && (<section className="main-area">
         <section className="tagline">
-          Discover Your Life, Travel Where You Want!
+          Discover Your Life, 
+          <br/>  Travel Where You Want!
         </section>
 
         <section className="mainform-outer">
