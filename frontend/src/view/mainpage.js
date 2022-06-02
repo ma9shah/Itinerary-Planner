@@ -54,7 +54,7 @@ const MainPage = () => {
 
       <NavBar></NavBar>
 
-      <section className="main-area">
+      {!isLoaded && !isLoading && (<section className="main-area">
         <section className="tagline">
           Discover Your Life, Travel Where You Want!
         </section>
@@ -92,52 +92,17 @@ const MainPage = () => {
                 {/* <input type="date" name="" id="" className="datepicker-inner"/> */}
               </div>
             <div>
-              <button className="searchicon"> GO! </button>
+              <button className="searchicon" disabled={(placeName && endDate && startDate && startDate <= endDate) ? false : true}
+                    onClick={(e) => handleSubmit(e)}>GO!</button>
             </div>
           </div>
 
         </section>
       </section>
-    
+    )}
       {/* <section className="main-footer">
         <img src={require('../assets/carimage.jpg')} className="footer-image" alt="" srcset="" />
       </section> */}
-    
-
-{/* 
-      {!isLoaded && !isLoading && (
-        // <section className="h-100">
-        <div className="container py-5 h-100">
-          <div className="row d-flex justify-content-center align-items-center h-100">
-            <div className="col">
-              <div className="card-body p-md-5 text-black">
-                <h3 className="mb-5 text-uppercase text-center">
-                  Itinerary Planner
-                </h3>
-                <DestinationField setplaceName={setplaceName} placeName={placeName}></DestinationField>
-
-                <div className="row">
-                  <DatePicker state={startDate} newState={setstartDate}></DatePicker>
-                  <DatePicker state={endDate} newState={setendDate}></DatePicker>
-                </div>
-
-                <div className="d-flex justify-content-center pt-3">
-                  <button
-                    type="button"
-                    className="btn btn-warning btn-lg ms-2"
-                    disabled={(placeName && endDate && startDate && startDate <= endDate) ? false : true}
-                    onClick={(e) => handleSubmit(e)}
-                  >
-                    Get Itinerary
-                  </button>
-                </div>
-                <br />
-                <center>{startDate && endDate && startDate > endDate && <h4 className="">End Date must be after the Start Date</h4>}</center>
-              </div>
-            </div>
-          </div>
-        </div>
-      )} */}
 
         
       {isLoading && !isLoaded && <Loader></Loader>}

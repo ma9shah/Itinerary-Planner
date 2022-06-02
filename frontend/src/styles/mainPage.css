@@ -35,7 +35,7 @@
     /* justify-content: center; */
     justify-content: space-around;
     flex-flow: wrap;
-    padding: 15px;
+    padding: 20px;
 
     /* margin: 10px 30px; */
 }
@@ -70,6 +70,7 @@
     text-decoration: none;
     display: inline-block;
     border: none;
+    color: #454648bd;
 }
 
 .searchLabel{
