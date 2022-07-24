@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'))
 
 //DB Connection
-const mongoAtlasUri = "mongodb+srv://ma9shah:mnsbh999@cluster0.nb97p.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const mongoAtlasUri = "mongodb+srv://ma9shah:{process.env.MONGOPASSWORD}@cluster0.nb97p.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 try {
   mongoose.connect(
     mongoAtlasUri,
